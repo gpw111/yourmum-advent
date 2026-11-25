@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Boob Advent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+/* VOICE: cheeky, warm and caring, a giggle with a good message at the end
+   IDEA: a candy-pink advent board of wrapped presents on a snowy berry-coloured night
+   PICTURE: snowy moonlit hills and a glowing cottage, doors wrapped in pink, red, teal and gold, baubles everywhere
+   COLOUR and TYPE: bubblegum pink, berry red, teal, gold, snow white; Fredoka for titles and numbers, Nunito for reading
+   LAYOUT: rounded title, the board filling the first screen, fact opens in a gift-tag card */
+:root{color-scheme:dark;--red:#ff5fa2;--red2:#c2185b;--green:#2ec4b6;--green2:#1a8f86;--cream:#fff4f8;--gold:#f2c14e;--gold2:#c9932a;--ink:#fff6e5;--muted:#d7e4ef;--snowc:#fff6e5}
+*{box-sizing:border-box;min-width:0}
+html,body{min-height:100%}
+body{margin:0;background:#2a0f2a;color:var(--ink);font:16px/1.55 Nunito,system-ui,sans-serif;overflow-x:clip}
+#scene,#snow,#snowfg{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
+#scene{z-index:0}#snow{z-index:1}#snowfg{z-index:5;filter:blur(1.4px)}
+.tw{animation:tw 3s ease-in-out infinite}
+@keyframes tw{50%{opacity:.25}}
+main{position:relative;z-index:2;max-width:1100px;margin:0 auto;padding:clamp(22px,4vw,48px) max(4vw,14px) 60px}
+header{text-align:center;margin-bottom:clamp(20px,3vw,34px)}
+h1{font-family:Fredoka,Nunito,sans-serif;font-weight:700;font-size:clamp(40px,7vw,70px);line-height:1.05;letter-spacing:.01em;margin:0;text-wrap:balance;color:var(--cream);text-shadow:0 3px 0 var(--red2),0 0 30px rgba(242,193,78,.35)}
+.status{display:inline-block;margin:12px 0 0;padding:6px 16px;border-radius:999px;background:rgba(6,18,38,.55);color:var(--muted);font-weight:700}
+.board{position:relative;padding:clamp(26px,3vw,36px) clamp(12px,2vw,24px) clamp(14px,2vw,24px);border-radius:20px;background:radial-gradient(ellipse at 50% 0%,#e0488d,#8a1450 70%);border:7px solid var(--gold);box-shadow:0 0 0 3px var(--red2),0 24px 60px rgba(0,0,0,.6),inset 0 0 40px rgba(0,0,0,.4)}
+.board::before{content:"";position:absolute;left:-14px;right:-14px;top:-18px;height:30px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 30' preserveAspectRatio='none'%3E%3Cpath d='M0 22 Q0 6 14 6 Q30 0 48 6 Q70 1 92 6 Q116 0 140 6 Q166 1 186 6 Q200 6 200 22 Q190 28 180 21 Q168 30 152 21 Q138 27 122 20 Q104 29 88 21 Q72 27 58 20 Q42 29 28 21 Q14 28 0 22Z' fill='%23f4f8fc'/%3E%3C/svg%3E") 0 0/100% 100%;filter:drop-shadow(0 3px 2px rgba(0,0,0,.25))}
+.lights{position:absolute;left:18px;right:18px;top:6px;display:flex;justify-content:space-between;border-top:2px solid #0a2416;border-radius:50%/0 0 100% 100%}
+.lights i{width:10px;height:15px;border-radius:50% 50% 45% 45%;margin-top:4px;background:var(--c);box-shadow:0 0 10px 2px var(--c);animation:tw 1.6s ease-in-out infinite;position:relative}
+.lights i::before{content:"";position:absolute;left:2px;top:-5px;width:6px;height:5px;background:#2b3a30;border-radius:2px}
+.lights i:nth-child(4n+1){--c:#ff3b3b}.lights i:nth-child(4n+2){--c:#ffd23f;animation-delay:.4s}.lights i:nth-child(4n+3){--c:#43e07a;animation-delay:.8s}.lights i:nth-child(4n){--c:#5ab4ff;animation-delay:1.2s}
+.lights i:nth-child(even){margin-top:9px}
+.grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:clamp(12px,1.8vw,20px);padding-top:18px}
+@media(max-width:760px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:430px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.cell{position:relative;aspect-ratio:1/1.12;perspective:1400px;border-radius:10px}
+.behind{position:absolute;inset:0;border-radius:10px;background:radial-gradient(circle at 50% 40%,#fffaf0,#f3e2c2);color:#5a1a14;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px;text-align:center;box-shadow:inset 0 3px 12px rgba(0,0,0,.4)}
+.behind svg{width:86%;height:auto;flex:0 1 auto;min-height:0}
+.behind span{font-size:12px;font-weight:800;line-height:1.2}
+.door{all:unset;position:absolute;inset:0;border-radius:10px;cursor:pointer;transform-origin:left center;transition:transform .9s cubic-bezier(.3,1.4,.5,1);box-shadow:0 5px 0 rgba(0,0,0,.35),0 10px 16px rgba(0,0,0,.35)}
+.door::before{content:"";position:absolute;left:-3px;right:-3px;top:-7px;height:18px;z-index:2;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 20' preserveAspectRatio='none'%3E%3Cpath d='M0 8 Q0 1 9 1 H91 Q100 1 100 8 V11 Q94 17 88 11 Q80 19 72 12 Q64 15 58 11 Q50 20 42 12 Q34 16 28 11 Q20 18 12 11 Q6 16 0 12Z' fill='%23f4f8fc'/%3E%3C/svg%3E") 0 0/100% 100%;filter:drop-shadow(0 2px 1px rgba(0,0,0,.25))}
+.p0{background:linear-gradient(90deg,transparent 43%,var(--gold) 43% 57%,transparent 57%),linear-gradient(transparent 31%,var(--gold) 31% 41%,transparent 41%),radial-gradient(circle,rgba(255,255,255,.6) 2.5px,transparent 3.2px) 0 0/14px 14px,linear-gradient(160deg,#ff86b8,var(--red) 55%,var(--red2))}
+.p1{background:linear-gradient(90deg,transparent 43%,var(--red) 43% 57%,transparent 57%),linear-gradient(transparent 31%,var(--red) 31% 41%,transparent 41%),repeating-linear-gradient(45deg,var(--green) 0 9px,var(--green2) 9px 18px)}
+.p2{background:linear-gradient(90deg,transparent 43%,var(--green) 43% 57%,transparent 57%),linear-gradient(transparent 31%,var(--green) 31% 41%,transparent 41%),repeating-linear-gradient(-45deg,#d8203a 0 8px,#fff4f8 8px 13px)}
+.p3{background:linear-gradient(90deg,transparent 43%,var(--gold) 43% 57%,transparent 57%),linear-gradient(transparent 31%,var(--gold) 31% 41%,transparent 41%),radial-gradient(circle,#ffd166 3px,transparent 3.6px) 0 0/16px 16px,linear-gradient(160deg,#c2185b,#8a1450)}
+.bow{position:absolute;left:50%;top:36%;width:46%;max-width:62px;transform:translate(-50%,-55%);filter:drop-shadow(0 2px 2px rgba(0,0,0,.35));z-index:1}
+.tag{position:absolute;left:50%;bottom:9%;transform:translateX(-50%) rotate(-4deg);min-width:46%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:50%;background:radial-gradient(circle at 40% 35%,#fffdf6,#f1dfbd);border:2px solid var(--gold2);box-shadow:0 3px 6px rgba(0,0,0,.35);font-family:Fredoka,Nunito,sans-serif;font-weight:700;font-size:clamp(20px,3.4vw,32px);line-height:1;color:var(--red2);padding:2px}
+.door:focus-visible{outline:3px solid var(--gold);outline-offset:4px}
+.door.locked{filter:saturate(.8) brightness(.88)}
+.cell.open .door{transform:rotateY(-84deg)}
+.cell.open .door .tag,.cell.open .door .bow{opacity:.4}
+.cell.today .door{animation:glow 2s ease-in-out infinite}
+@keyframes glow{50%{box-shadow:0 5px 0 rgba(0,0,0,.35),0 0 0 4px var(--gold),0 0 28px var(--gold)}}
+.shake{animation:shake .45s}
+@keyframes shake{20%,60%{transform:translateX(-5px) rotate(-2deg)}40%,80%{transform:translateX(5px) rotate(2deg)}}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:var(--cream);color:#5a1a14;font-weight:800;padding:12px 18px;border-radius:999px;box-shadow:0 10px 30px rgba(0,0,0,.4);opacity:0;transition:.3s;z-index:20;max-width:calc(100% - 32px);text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.modal{position:fixed;inset:0;z-index:10;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(3,10,24,.72);backdrop-filter:blur(3px)}
+.modal.show{display:flex}
+.card{position:relative;width:min(520px,100%);background:radial-gradient(circle at 50% 20%,#fffdf6,#f6e8cc);color:#3b120d;border-radius:20px;padding:clamp(34px,5vw,46px) clamp(22px,5vw,40px) clamp(24px,4vw,34px);text-align:center;border:6px solid var(--red);box-shadow:0 0 0 6px var(--green),0 0 0 9px var(--gold),0 30px 60px rgba(0,0,0,.5);animation:pop .45s cubic-bezier(.3,1.5,.5,1)}
+.card .cbow{position:absolute;left:50%;top:-34px;width:84px;transform:translateX(-50%);filter:drop-shadow(0 3px 3px rgba(0,0,0,.35))}
+@keyframes pop{from{transform:scale(.6);opacity:0}}
+.card h2{font-family:Fredoka,Nunito,sans-serif;font-weight:700;font-size:clamp(28px,5vw,38px);line-height:1.1;margin:0 0 12px;color:var(--red)}
+.card p{font-size:clamp(19px,3.4vw,23px);line-height:1.4;font-weight:700;margin:0 0 24px;text-wrap:balance}
+.btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn:disabled{opacity:.6;cursor:wait}
+.btn{font:800 16px Nunito,sans-serif;min-height:44px;padding:10px 22px;border-radius:999px;border:0;cursor:pointer;background:var(--green);color:var(--cream)}
+.btn.alt{background:transparent;color:var(--green);box-shadow:inset 0 0 0 2px var(--green)}
+.btn:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+footer{text-align:center;margin-top:26px}
+footer span{display:inline-block;padding:6px 16px;border-radius:999px;background:rgba(6,18,38,.6);color:#1c2b3d;color:var(--muted);font-size:13px}
+.card .art{width:clamp(96px,26vw,140px);aspect-ratio:1;margin:0 auto 6px;border-radius:50%;background:#fff;border:3px solid var(--gold);padding:8%;box-shadow:inset 0 2px 8px rgba(0,0,0,.12)}
+.card .art svg{display:block;width:100%;height:100%}
+.ratel{font-size:13px!important;font-weight:800;color:#7a5a3a;margin:0 0 6px!important}
+.rate{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:0 0 20px}
+.rate button{font:800 15px Nunito,sans-serif;min-height:44px;padding:6px 16px;border-radius:999px;border:2px solid #e2cfa6;background:#fff;color:#3b120d;cursor:pointer}
+.rate button[aria-pressed=true]{background:var(--red);border-color:var(--red);color:var(--cream)}
+.rate button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.rate small{font-size:13px;opacity:.75;margin-left:6px}
+.card .note{font-size:15px;font-weight:700;margin:0 0 16px}
+.card form{text-align:left}
+.lab{display:block;font-size:14px;font-weight:800;margin:0 0 6px}
+.card textarea,.card input{display:block;width:100%;font:16px/1.4 Nunito,sans-serif;padding:10px 12px;border-radius:12px;border:2px solid #e2cfa6;background:#fff;color:#3b120d;margin:0 0 14px}
+.card textarea{min-height:110px;resize:vertical}.card input{min-height:44px}
+.card textarea:focus,.card input:focus{outline:3px solid var(--gold);outline-offset:1px}
+.card form .note{text-align:center;min-height:1.4em;color:var(--red);font-size:16px}
+.hp{position:absolute!important;left:-9999px;width:1px;height:1px;opacity:0}
+.modal{overflow-y:auto;padding-top:48px}.modal.show{align-items:safe center}
+.link{all:unset;cursor:pointer;display:inline-block;margin-top:12px;padding:11px 20px;border-radius:999px;background:var(--red);color:var(--cream);font-weight:800;box-shadow:0 0 0 2px var(--gold),0 6px 16px rgba(0,0,0,.35)}
+.link:focus-visible{outline:3px solid var(--gold);outline-offset:4px}
+.sub{margin:8px 0 0;font-weight:800;color:#ffd1e6;font-size:clamp(15px,2.4vw,18px)}
+.card h2{color:var(--red2)}
+.btn{background:var(--red2)}
+.btn.alt{background:transparent;color:var(--red2);box-shadow:inset 0 0 0 2px var(--red2)}
+.rate button[aria-pressed=true]{background:var(--red2);border-color:var(--red2)}
+.link{background:var(--red2)}
+@media(prefers-reduced-motion:reduce){.door{transition:none}.cell.today .door,.shake,.card,.tw,.lights i{animation:none}}
+</style>
+</head>
+<body>
+<svg id="scene" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1a0a1f"/><stop offset=".55" stop-color="#3d1240"/><stop offset="1" stop-color="#6b1f55"/>
+    </linearGradient>
+    <radialGradient id="glow"><stop offset="0" stop-color="#fff6d8" stop-opacity=".55"/><stop offset=".35" stop-color="#fff6d8" stop-opacity=".15"/><stop offset="1" stop-color="#fff6d8" stop-opacity="0"/></radialGradient>
+    <radialGradient id="moonf" cx=".4" cy=".4"><stop offset="0" stop-color="#fffdf2"/><stop offset="1" stop-color="#ecdfb8"/></radialGradient>
+    <linearGradient id="snowg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4f8fc"/><stop offset="1" stop-color="#b9cbe0"/></linearGradient>
+    <linearGradient id="snowfar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9fb6cf"/><stop offset="1" stop-color="#6f88a6"/></linearGradient>
+    <radialGradient id="win"><stop offset="0" stop-color="#ffd76a" stop-opacity=".8"/><stop offset="1" stop-color="#ffd76a" stop-opacity="0"/></radialGradient>
+    <symbol id="pine" viewBox="0 0 40 80">
+      <path d="M20 0L33 24H26L37 46H28L40 70H0L12 46H3L14 24H7Z" fill="#0b2a26"/>
+      <path d="M20 0L27 13Q20 17 13 13ZM14 24H26Q23 29 20 26Q17 30 14 24ZM12 46H28Q24 51 20 48Q16 52 12 46ZM0 70H40Q30 75 20 71Q10 75 0 70Z" fill="#e6eef6"/>
+      <rect x="17" y="70" width="6" height="10" fill="#2a1a12"/>
+    </symbol>
+  </defs>
+  <rect width="1440" height="900" fill="url(#sky)"/>
+  <g id="stars"></g>
+  <circle cx="1130" cy="150" r="190" fill="url(#glow)"/>
+  <circle cx="1130" cy="150" r="54" fill="url(#moonf)"/>
+  <circle cx="1112" cy="136" r="9" fill="#e3d4a8" opacity=".6"/><circle cx="1146" cy="168" r="12" fill="#e3d4a8" opacity=".5"/><circle cx="1150" cy="128" r="5" fill="#e3d4a8" opacity=".6"/>
+  <path d="M0 640 Q180 560 380 610 T780 590 T1160 600 T1440 580 V900 H0Z" fill="url(#snowfar)"/>
+  <g>
+    <use href="#pine" x="60" y="560" width="40" height="80"/><use href="#pine" x="110" y="585" width="30" height="60"/>
+    <use href="#pine" x="300" y="560" width="36" height="72"/><use href="#pine" x="560" y="550" width="40" height="80"/>
+    <use href="#pine" x="610" y="575" width="28" height="56"/><use href="#pine" x="900" y="550" width="38" height="76"/>
+    <use href="#pine" x="1240" y="540" width="40" height="80"/><use href="#pine" x="1290" y="565" width="30" height="60"/>
+  </g>
+  <path d="M0 720 Q240 660 520 705 T1000 690 T1440 700 V900 H0Z" fill="url(#snowg)"/>
+  <g transform="translate(1010 600)">
+    <circle cx="70" cy="80" r="90" fill="url(#win)"/>
+    <rect x="22" y="40" width="96" height="66" fill="#3a1f17"/>
+    <rect x="86" y="8" width="14" height="30" fill="#4a2a1c"/><rect x="83" y="4" width="20" height="8" rx="3" fill="#f4f8fc"/>
+    <path d="M10 46 L70 0 L130 46 Z" fill="#5a2a1c"/>
+    <path d="M4 48 Q8 40 16 41 L70 -2 L124 41 Q132 40 136 48 Q128 54 118 48 Q106 56 94 48 Q82 55 70 48 Q58 56 46 48 Q34 55 22 48 Q12 55 4 48Z" fill="#f4f8fc"/>
+    <rect x="38" y="62" width="22" height="20" fill="#ffd76a"/><rect x="80" y="62" width="22" height="20" fill="#ffc94a"/>
+    <path d="M49 62V82M38 72H60M91 62V82M80 72H102" stroke="#3a1f17" stroke-width="2"/>
+    <rect x="62" y="80" width="16" height="26" fill="#7a1a14"/>
+  </g>
+  <use href="#pine" x="180" y="610" width="70" height="140"/>
+  <use href="#pine" x="1300" y="620" width="60" height="120"/>
+  <use href="#pine" x="1360" y="650" width="44" height="88"/>
+  <path d="M0 800 Q300 760 640 800 T1440 790 V900 H0Z" fill="#f6f9fd"/>
+  <path d="M0 830 Q360 805 760 835 T1440 830" fill="none" stroke="#d3e0ee" stroke-width="3"/>
+</svg>
+<canvas id="snow" aria-hidden="true"></canvas>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="bowS" viewBox="0 0 80 44">
+    <path d="M40 22 C26 2 4 0 4 14 C4 26 24 28 40 22Z" style="fill:var(--bc,#f2c14e)" stroke="rgba(0,0,0,.25)" stroke-width="1.5"/>
+    <path d="M40 22 C54 2 76 0 76 14 C76 26 56 28 40 22Z" style="fill:var(--bc,#f2c14e)" stroke="rgba(0,0,0,.25)" stroke-width="1.5"/>
+    <path d="M36 24 L26 44 L33 41 L36 47 L40 26Z M44 24 L54 44 L47 41 L44 47 L40 26Z" style="fill:var(--bc,#f2c14e)" stroke="rgba(0,0,0,.2)" stroke-width="1"/>
+    <path d="M14 12 C20 8 28 12 32 18" stroke="rgba(255,255,255,.55)" stroke-width="2" fill="none"/>
+    <circle cx="40" cy="22" r="7" style="fill:var(--bc,#f2c14e)" stroke="rgba(0,0,0,.3)" stroke-width="1.5"/>
+  </symbol>
+</svg>
+
+<main>
+  <header>
+    <h1>Boob Advent</h1>
+    <p class="sub">24 fun facts about boobs, one a day</p>
+    <p class="status" id="status"></p>
+  </header>
+  <div class="board">
+    <div class="lights" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="grid" id="grid"></div>
+  </div>
+  <footer><span>One boob fact a day, 1 to 24 December. Doors unlock at midnight your time.</span><br><button class="link" id="openSubmit" type="button">Know a fact we missed? Send it in</button></footer>
+</main>
+
+<canvas id="snowfg" aria-hidden="true"></canvas>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <div class="card">
+    <svg class="cbow" viewBox="0 0 80 44" style="--bc:#ff5fa2" aria-hidden="true"><use href="#bowS"/></svg>
+    <div class="art" id="mArt"></div>
+    <h2 id="mTitle"></h2>
+    <p id="mFact"></p>
+    <p class="ratel">Did you know that one?</p>
+    <div class="rate" id="rate"></div>
+    <div class="btns">
+      <button class="btn alt" id="copy" type="button">Copy fact</button>
+      <button class="btn" id="close" type="button">Close</button>
+    </div>
+  </div>
+</div>
+<div class="modal" id="amodal" role="dialog" aria-modal="true" aria-labelledby="aTitle">
+  <div class="card">
+    <h2 id="aTitle">Can't wait?</h2>
+    <p>I acknowledge I'm unwrapping these early</p>
+    <div class="btns">
+      <button class="btn alt" id="acancel" type="button">Cancel</button>
+      <button class="btn" id="aok" type="button">I acknowledge</button>
+    </div>
+  </div>
+</div>
+<div class="modal" id="smodal" role="dialog" aria-modal="true" aria-labelledby="sTitle">
+  <div class="card">
+    <h2 id="sTitle">Got a fact?</h2>
+    <p class="note">Send us your favourite boob fact. The best ones might make next year's calendar.</p>
+    <form id="sform" novalidate>
+      <label class="lab" for="sfact">Your fact</label>
+      <textarea id="sfact" maxlength="280" placeholder="Did you know…"></textarea>
+      <label class="lab" for="sname">Your name (optional)</label>
+      <input id="sname" maxlength="40" autocomplete="nickname">
+      <input class="hp" id="sweb" name="leave_blank" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <p class="note" id="smsg" role="status"></p>
+      <div class="btns">
+        <button class="btn alt" id="scancel" type="button">Cancel</button>
+        <button class="btn" id="ssend" type="submit">Send fact</button>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+{
+const YEAR = 2026;
+/* Ratings and fact submissions are handled by the Cloudflare Worker */
+const API = "https://yourmum-advent.iamthebest111.workers.dev";
+const ORDER = [7,15,2,21,11,18,4,24,9,13,1,20,16,6,23,10,3,19,12,22,5,14,17,8];
+const BOWS = { p0:"#f2c14e", p1:"#ff5fa2", p2:"#2ec4b6", p3:"#f2c14e" };
+const SITE = "boobs";
+const KEY = "boobs-advent-" + YEAR;
+const $ = id => document.getElementById(id);
+const grid = $("grid"), modal = $("modal"), toast = $("toast");
+
+/* stars */
+{
+  let s = "", seed = 7;
+  const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
+  for (let i = 0; i < 140; i++) {
+    const x = rnd() * 1440, y = rnd() * 520, r = .6 + rnd() * 1.6;
+    const tw = rnd() < .45 ? ' class="tw" style="animation-delay:' + (rnd() * 3).toFixed(2) + 's"' : "";
+    s += '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="' + r.toFixed(2) + '" fill="#fff" opacity="' + (.5 + rnd() * .5).toFixed(2) + '"' + tw + '/>';
+  }
+  $("stars").innerHTML = s;
+}
+
+let opened = [];
+try { opened = JSON.parse(localStorage.getItem(KEY) || "[]"); } catch (e) { opened = []; }
+const save = () => { if (preview()) return; try { localStorage.setItem(KEY, JSON.stringify(opened)); } catch (e) {} };
+const preview = () => location.hash === "#preview";
+
+function today() {
+  const d = new Date();
+  if (d.getFullYear() > YEAR) return 99;
+  if (d.getFullYear() < YEAR || d.getMonth() < 11) return 0;
+  return d.getDate();
+}
+const canOpen = n => preview() || n <= today();
+
+const FACTS = [
+  "Booby birds got their name from the Spanish word bobo, meaning foolish or clownish, because they're clumsy on land.",
+  "Male blue-footed boobies show off their feet to impress a mate with a high-stepping strut. The bluer the feet, the more attractive the bird.",
+  "Mammals are named after boobs. Carl Linnaeus coined the word Mammalia in 1758, from the Latin mamma, meaning breast.",
+  "Linnaeus was firmly against wet-nursing, and one historian argues that's partly why he picked breasts, rather than hair or ears, to name the whole group.",
+  "The Milky Way is named after breast milk. In Greek myth it was milk spilled across the sky by the goddess Hera, and the word galaxy comes from gala, Greek for milk.",
+  "The modern bra was improvised in 1913 by 19-year-old Mary Phelps Jacob, using two silk handkerchiefs and some pink ribbon.",
+  "Jacob patented her “backless brassiere” on 3 November 1914, then sold the patent to the Warner Brothers Corset Company for $1,500.",
+  "Vogue magazine first used the word brassiere in 1907. People started shortening it to “bra” in the 1930s.",
+  "World War I helped kill off the corset. Metal was needed for the war effort, so steel-boned corsets fell out of use.",
+  "Lettered cup sizes like A, B, C and D appeared in the early 1930s. Historians still argue over which company came up with them.",
+  "No bras were actually burned at the famous 1968 Miss America protest. They were thrown into a “Freedom Trash Can” instead.",
+  "Men have nipples because every embryo grows them in the first few weeks, before it starts developing as male or female.",
+  "Male mice, male horses and male platypuses are some of the few male mammals born with no nipples at all.",
+  "Female Virginia opossums usually have 13 nipples, arranged in a circle with one in the middle.",
+  "Platypuses and echidnas have no nipples. Their milk seeps out through special pores in the skin.",
+  "Male Dayak fruit bats can make milk, one of the very few male mammals known to do so.",
+  "Newborn babies of either sex sometimes produce a little milk of their own. It's known as “witch's milk”.",
+  "Extra nipples are fairly common. They usually sit along the “milk line”, a line running down the body from the armpit.",
+  "Breasts of different sizes are the most common breast “anomaly” of all. Perfectly matching pairs are the exception.",
+  "Breast tissue reaches up towards the armpit, which is why breast checks should include your armpits too.",
+  "Everyone has breast tissue. Around 400 men are diagnosed with breast cancer in the UK every year.",
+  "In the UK, 1 in 7 women will develop breast cancer in their lifetime, which is why getting to know your normal matters.",
+  "The UK charity CoppaFeel! was set up in 2009 by twin sisters Kris and Maren Hallenga, after Kris was diagnosed with breast cancer at 23.",
+  "The best present you can give yourself: know what's normal for you. Give your boobs or chest a check, armpits included, and see your GP if anything changes. Merry Christmas!"
+];
+
+/* cartoons, one per day, 100x100: playful objects, nothing rude */
+const P = "#ff5fa2", R = "#d8203a", T = "#2ec4b6", Y = "#ffd166", K = "#3a1430", C = "#fff4f8", B = "#5aa9e6", S = "#f5cba7";
+const t = (x, y, str, size, fill) => '<text x="' + x + '" y="' + y + '" font-size="' + size + '" fill="' + fill + '" stroke="none" text-anchor="middle" font-family="Nunito,sans-serif" font-weight="800">' + str + '</text>';
+const loop = (n, f) => Array.from({ length: n }, (_, i) => f(i)).join("");
+const cal = (mon, day, sub) => '<rect x="16" y="14" width="68" height="74" rx="6" fill="#fff"/><rect x="16" y="14" width="68" height="20" rx="6" fill="' + P + '"/><path d="M30 8v12M70 8v12" fill="none" stroke-width="4"/>' + t(50, 29, mon, 9, C) + t(50, 68, day, 30, K) + t(50, 82, sub, 7.5, R);
+const bird = (x, y, s, feet) => '<g transform="translate(' + x + ' ' + y + ') scale(' + s + ')"><ellipse cx="30" cy="40" rx="18" ry="22" fill="#fff"/><path d="M16 34Q6 46 14 58L22 50Z" fill="#8a6a4a"/><circle cx="34" cy="16" r="11" fill="#fff"/><circle cx="37" cy="13" r="2.2" fill="' + K + '"/><path d="M44 16L60 22L44 22Z" fill="#7aa0b8"/><path d="M24 62V68M36 62V68" fill="none"/><path d="M18 70h12M30 70h12" fill="none" stroke="' + (feet || B) + '" stroke-width="5"/></g>';
+const bauble = (x, y, r, f) => '<rect x="' + (x - 4) + '" y="' + (y - r - 6) + '" width="8" height="6" fill="' + Y + '"/><circle cx="' + x + '" cy="' + y + '" r="' + r + '" fill="' + f + '"/><path d="M' + (x - r * .5) + ' ' + (y - r * .4) + 'q' + (r * .3) + ' ' + (-r * .3) + ' ' + (r * .6) + ' ' + (-r * .2) + '" fill="none" stroke="#fff" stroke-width="2"/>';
+const ribbon = (x, y, s, f) => '<g transform="translate(' + x + ' ' + y + ') scale(' + s + ')"><path d="M20 4Q8 4 8 18Q8 30 20 44Q32 30 32 18Q32 4 20 4Z" fill="none" stroke="' + f + '" stroke-width="8"/><path d="M14 36L4 60M26 36L36 60" fill="none" stroke="' + f + '" stroke-width="8"/></g>';
+
+const ART = [
+  /* 1 booby bird */ bird(14, 10, 1.1) + t(78, 26, "bobo!", 11, R),
+  /* 2 bright blue feet */ bird(4, 14, .9) + '<path d="M64 70h14M62 80h18" fill="none" stroke="' + B + '" stroke-width="7"/>' + '<path d="M76 22c4-8 14-4 10 4l-10 10-10-10c-4-8 6-12 10-4z" fill="' + P + '"/>',
+  /* 3 Latin book */ '<path d="M10 24Q30 16 50 24V86Q30 78 10 86Z" fill="#fff"/><path d="M90 24Q70 16 50 24V86Q70 78 90 86Z" fill="#fff"/>' + t(30, 50, "MAMMA", 9, R) + t(70, 50, "1758", 11, K) + '<path d="M18 62h24M58 62h24M18 70h20M58 70h22" fill="none" stroke="#c9b2c2" stroke-width="2"/>',
+  /* 4 baby bottle crossed? no: quill and scroll */ '<path d="M18 20H72Q80 20 80 28V84H26Q18 84 18 76Z" fill="' + C + '"/><path d="M28 36h40M28 46h40M28 56h30M28 66h36" fill="none" stroke="#c9b2c2" stroke-width="2"/><path d="M86 8Q60 30 58 62L64 60Q70 34 90 12Z" fill="' + T + '"/>' + t(48, 94, "LINNAEUS", 9, R),
+  /* 5 milky galaxy */ '<circle cx="50" cy="50" r="40" fill="#2a1a4a"/><path d="M20 62Q40 30 80 38Q60 44 50 56Q40 66 20 62Z" fill="#fff" opacity=".85"/>' + loop(12, i => '<circle cx="' + [24, 70, 34, 78, 60, 30, 46, 66, 82, 18, 52, 40][i] + '" cy="' + [30, 22, 74, 60, 76, 44, 26, 64, 46, 54, 84, 40][i] + '" r="1.6" fill="' + Y + '" stroke="none"/>') + t(50, 97, "GALA = MILK", 8, R),
+  /* 6 handkerchiefs and ribbon */ '<path d="M10 30L44 26L46 62L12 66Z" fill="#fff"/><path d="M56 26L90 30L88 66L54 62Z" fill="#fff"/><path d="M14 34L40 30M58 30L84 34" fill="none" stroke="#c9b2c2" stroke-width="2"/><path d="M44 44Q50 52 56 44" fill="none" stroke="' + P + '" stroke-width="4"/><path d="M50 48Q38 66 30 82M50 48Q62 66 70 82" fill="none" stroke="' + P + '" stroke-width="4"/>' + t(50, 96, "1913", 10, R),
+  /* 7 patent certificate */ '<rect x="12" y="14" width="76" height="66" rx="4" fill="#fffdf2"/><rect x="18" y="20" width="64" height="54" rx="2" fill="none" stroke="' + Y + '" stroke-width="2"/>' + t(50, 36, "PATENT", 12, K) + t(50, 52, "3 NOV 1914", 9, R) + '<circle cx="70" cy="74" r="10" fill="' + R + '"/><path d="M64 82L60 94L66 90L70 96L72 84" fill="' + R + '"/>' + t(36, 66, "$1,500", 10, T),
+  /* 8 magazine */ '<rect x="20" y="10" width="60" height="80" fill="' + C + '"/><rect x="20" y="10" width="60" height="18" fill="' + K + '"/>' + t(50, 23, "MAGAZINE", 9, C) + t(50, 54, "BRA?", 16, P) + t(50, 80, "1907", 11, R),
+  /* 9 corset crossed out */ '<path d="M34 16H66L72 40L66 84H34L28 40Z" fill="#f2e6dc"/>' + loop(6, i => '<path d="M44 ' + (26 + i * 9) + 'L56 ' + (30 + i * 9) + 'M56 ' + (26 + i * 9) + 'L44 ' + (30 + i * 9) + '" fill="none" stroke="' + R + '" stroke-width="1.5"/>') + '<circle cx="50" cy="50" r="40" fill="none" stroke="' + R + '" stroke-width="6"/><path d="M22 22L78 78" fill="none" stroke="' + R + '" stroke-width="6"/>',
+  /* 10 size labels */ loop(4, i => '<rect x="' + (8 + i * 22) + '" y="' + (30 + (i % 2) * 14) + '" width="18" height="24" rx="3" fill="' + [P, T, Y, B][i] + '"/><circle cx="' + (17 + i * 22) + '" cy="' + (35 + (i % 2) * 14) + '" r="2" fill="#fff"/>' + t(17 + i * 22, 50 + (i % 2) * 14, "ABCD"[i], 11, K)) + t(50, 90, "1930s", 11, R),
+  /* 11 trash can */ '<path d="M26 40H74L68 92H32Z" fill="#9aa3ad"/><rect x="22" y="32" width="56" height="8" rx="2" fill="#6b737d"/><path d="M40 32Q40 14 50 20Q60 14 60 32" fill="none" stroke="' + P + '" stroke-width="3"/>' + t(50, 70, "NO FIRE", 9, C) + t(50, 12, "1968", 10, R),
+  /* 12 XX and XY */ '<circle cx="30" cy="50" r="22" fill="' + C + '"/><circle cx="70" cy="50" r="22" fill="' + C + '"/>' + t(30, 57, "XX", 18, P) + t(70, 57, "XY", 18, B) + '<path d="M44 84H56" fill="none" stroke-width="3"/>' + t(50, 92, "same start", 9, R),
+  /* 13 mouse */ '<ellipse cx="46" cy="60" rx="28" ry="18" fill="#c9ced6"/><circle cx="70" cy="48" r="12" fill="#c9ced6"/><circle cx="72" cy="36" r="8" fill="#f2c4cf"/><circle cx="76" cy="46" r="2" fill="' + K + '"/><circle cx="82" cy="52" r="2" fill="' + P + '"/><path d="M18 62Q4 60 8 46" fill="none" stroke-width="3"/>' + t(46, 92, "none!", 11, R),
+  /* 14 thirteen dots */ '<circle cx="50" cy="50" r="38" fill="' + C + '"/>' + loop(12, i => { const a = i / 12 * Math.PI * 2; return '<circle cx="' + (50 + 26 * Math.cos(a)).toFixed(1) + '" cy="' + (50 + 26 * Math.sin(a)).toFixed(1) + '" r="4" fill="' + P + '"/>'; }) + '<circle cx="50" cy="50" r="4" fill="' + R + '"/>' + t(50, 97, "13", 10, R),
+  /* 15 platypus */ '<ellipse cx="50" cy="58" rx="30" ry="16" fill="#8a5a3a"/><path d="M76 52Q96 50 96 58Q96 66 76 64Z" fill="#3a3a3a"/><circle cx="72" cy="52" r="2" fill="#fff"/><path d="M20 58Q6 60 8 70Q18 68 22 64Z" fill="#6a4228"/><path d="M36 72L32 80M60 72L64 80" fill="none" stroke-width="3"/>' + t(50, 30, "no nipples", 10, R),
+  /* 16 bat */ '<path d="M50 40Q40 30 30 36Q20 28 8 34Q16 42 14 52Q24 46 32 52Q38 46 50 54Q62 46 68 52Q76 46 86 52Q84 42 92 34Q80 28 70 36Q60 30 50 40Z" fill="#4a3a5a"/><circle cx="46" cy="44" r="1.6" fill="#fff"/><circle cx="54" cy="44" r="1.6" fill="#fff"/><path d="M42 74h16v16H42Z" fill="#fff"/><path d="M44 70h12v4H44Z" fill="' + B + '"/>' + t(28, 84, "DAD", 9, R),
+  /* 17 witch hat and milk */ '<path d="M20 50L44 8L56 50Z" fill="' + K + '"/><ellipse cx="38" cy="52" rx="28" ry="6" fill="' + K + '"/><rect x="30" y="40" width="18" height="6" fill="' + P + '"/><path d="M64 46h18v6l4 8v28H60V60l4-8Z" fill="#fff"/><rect x="64" y="40" width="18" height="6" fill="' + B + '"/>' + t(73, 76, "MILK", 7, B),
+  /* 18 dotted line */ '<path d="M30 10Q50 50 30 90M70 10Q50 50 70 90" fill="none" stroke="' + P + '" stroke-width="2.5" stroke-dasharray="4 5"/>' + loop(3, i => '<circle cx="' + [36, 45, 40][i] + '" cy="' + [30, 56, 76][i] + '" r="3" fill="' + R + '"/>') + t(72, 52, "milk", 9, R) + t(72, 62, "line", 9, R),
+  /* 19 odd baubles */ bauble(32, 56, 20, P) + bauble(72, 60, 15, T) + '<path d="M10 20Q50 34 90 20" fill="none" stroke="' + K + '" stroke-width="2"/><path d="M32 30V22M72 39V27" fill="none"/>',
+  /* 20 arrow to armpit */ '<path d="M30 92V50Q30 28 50 28Q70 28 70 50V92" fill="' + S + '"/><path d="M70 50L92 14" fill="none" stroke="' + S + '" stroke-width="14" stroke-linecap="round"/><path d="M14 30L52 46" fill="none" stroke="' + T + '" stroke-width="4"/><path d="M44 36L54 47L42 52" fill="none" stroke="' + T + '" stroke-width="4"/>' + t(22, 22, "check here", 8, R),
+  /* 21 men too */ ribbon(30, 14, 1, B) + '<circle cx="22" cy="76" r="10" fill="none" stroke="' + K + '" stroke-width="3"/><path d="M29 69L38 60M32 60h6v6" fill="none" stroke="' + K + '" stroke-width="3"/>' + t(76, 90, "400", 14, R),
+  /* 22 one in seven */ loop(7, i => '<circle cx="' + (10 + i * 13.3) + '" cy="44" r="5" fill="' + (i === 3 ? P : "#c9b2c2") + '"/><path d="M' + (4 + i * 13.3) + ' 66Q' + (10 + i * 13.3) + ' 50 ' + (16 + i * 13.3) + ' 66Z" fill="' + (i === 3 ? P : "#c9b2c2") + '"/>') + t(50, 88, "1 in 7", 14, R),
+  /* 23 pink ribbon and two hearts */ ribbon(30, 14, 1, P) + '<path d="M76 30c3-7 13-4 9 4l-9 9-9-9c-4-8 6-11 9-4z" fill="' + R + '"/><path d="M84 52c2-5 9-3 7 3l-7 6-7-6c-2-6 5-8 7-3z" fill="' + R + '"/>' + t(50, 96, "2009", 10, K),
+  /* 24 gift with a heart */ '<rect x="18" y="42" width="64" height="48" fill="' + P + '"/><rect x="14" y="32" width="72" height="12" fill="' + R + '"/><rect x="45" y="32" width="10" height="58" fill="' + Y + '"/><path d="M50 32Q36 14 32 26Q34 34 50 32Q64 14 68 26Q66 34 50 32" fill="' + Y + '"/><path d="M30 64c3-7 13-4 9 4l-9 9-9-9c-4-8 6-11 9-4z" fill="#fff"/>' + t(70, 72, "CHECK", 8, C)
+];
+const CARTOONS = ART.map(a => '<svg viewBox="0 0 100 100" aria-hidden="true"><g stroke="' + K + '" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">' + a + '</g></svg>');
+
+const star = '<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3l4.9 10.6 11.6 1.3-8.6 7.9 2.4 11.4L20 28.4 9.7 34.2l2.4-11.4-8.6-7.9 11.6-1.3z" fill="#f2c14e" stroke="#c3121f" stroke-width="1.5"/></svg>';
+
+function render() {
+  const t = today();
+  grid.innerHTML = ORDER.map((n, i) => {
+    const p = "p" + ((i + Math.floor(i / 6)) % 4);
+    const isOpen = opened.includes(n);
+    const cls = ["cell", isOpen ? "open" : "", (n === t && !isOpen) ? "today" : ""].join(" ");
+    return '<div class="' + cls + '" data-n="' + n + '">' +
+      '<div class="behind">' + CARTOONS[n - 1] + '<span>Day ' + n + '</span></div>' +
+      '<button class="door ' + p + (canOpen(n) ? "" : " locked") + '" type="button" aria-label="Door ' + n + '">' +
+      '<svg class="bow" viewBox="0 0 80 44" style="--bc:' + BOWS[p] + '" aria-hidden="true"><use href="#bowS"/></svg>' +
+      '<b class="tag">' + n + '</b></button></div>';
+  }).join("");
+  const s = $("status");
+  if (preview()) s.textContent = "Preview mode: every door is unlocked.";
+  else if (t === 0) {
+    const days = Math.ceil((new Date(YEAR, 11, 1) - new Date()) / 864e5);
+    s.textContent = days <= 1 ? "Door 1 opens at midnight." : "Door 1 opens in " + days + " days.";
+  } else if (t > 24) s.textContent = "Every door is open. Merry Christmas, and check yourself!";
+  else s.textContent = "It's " + t + " December. Door " + t + " is waiting.";
+}
+
+let tTimer;
+function say(msg) {
+  toast.textContent = msg;
+  toast.classList.add("show");
+  clearTimeout(tTimer);
+  tTimer = setTimeout(() => toast.classList.remove("show"), 3200);
+}
+
+/* early-door heckles */
+const NOPE = [
+  "Hold your baubles! Door {n} opens on {n} December.",
+  "No peeking. Door {n} stays under wraps until {n} December.",
+  "Support is coming, on {n} December.",
+  "Keep abreast of the calendar: door {n} opens on {n} December.",
+  "Hands off the goods until {n} December.",
+  "This door needs a little more lift. Try again on {n} December.",
+  "Nice try. Door {n} is fully covered until {n} December.",
+  "Patience! It's not time to unwrap these yet.",
+  "Door {n} is still in its wrapping. Come back on {n} December.",
+  "Easy, tiger. Door {n} opens on {n} December."
+];
+let lastNope = -1;
+function heckle(n) {
+  let i;
+  do { i = Math.floor(Math.random() * NOPE.length); } while (i === lastNope && NOPE.length > 1);
+  lastNope = i;
+  say(NOPE[i].split("{n}").join(n));
+}
+
+/* modals */
+const smodal = $("smodal");
+let current = 0, lastFocus = null;
+function openModal(m, focusEl) {
+  lastFocus = document.activeElement;
+  m.classList.add("show");
+  focusEl.focus();
+}
+function closeModal(m) {
+  m.classList.remove("show");
+  if (lastFocus) lastFocus.focus();
+}
+function show(n) {
+  current = n;
+  $("mArt").innerHTML = CARTOONS[n - 1];
+  $("mTitle").textContent = "Day " + n;
+  $("mFact").textContent = FACTS[n - 1];
+  renderRate();
+  openModal(modal, $("close"));
+}
+
+/* ratings: counts come from /api on Cloudflare; your own vote is remembered here */
+const VOTES = [["knew", "Knew it"], ["noway", "Who knew?!"], ["blown", "Boob-tastic!"]];
+const VKEY = KEY + "-votes";
+let myVotes = {}, counts = {}, live = false;
+try { myVotes = JSON.parse(localStorage.getItem(VKEY) || "{}") || {}; } catch (e) { myVotes = {}; }
+const saveVotes = () => { try { localStorage.setItem(VKEY, JSON.stringify(myVotes)); } catch (e) {} };
+const isVote = v => VOTES.some(x => x[0] === v);
+function renderRate() {
+  const c = counts[current] || {};
+  $("rate").innerHTML = VOTES.map(([k, l]) =>
+    '<button type="button" data-v="' + k + '" aria-pressed="' + (myVotes[current] === k) + '">' + l +
+    (live ? '<small>' + (Number(c[k]) || 0) + '</small>' : "") + '</button>').join("");
+}
+fetch(API + "/api/ratings?site=" + SITE).then(r => r.ok ? r.json() : Promise.reject()).then(rows => {
+  if (!Array.isArray(rows)) return;
+  for (const r of rows) {
+    const d = Number(r.day), v = String(r.vote), n = Number(r.n);
+    if (d >= 1 && d <= 24 && isVote(v) && n >= 0) (counts[d] = counts[d] || {})[v] = n;
+  }
+  live = true;
+  if (modal.classList.contains("show")) renderRate();
+}).catch(() => {});
+const THANKS = ["Vote counted.", "Thanks for your support!", "Noted. Cheers, chest!"];
+$("rate").addEventListener("click", e => {
+  const b = e.target.closest("button");
+  if (!b) return;
+  const v = b.dataset.v, prev = myVotes[current] || null;
+  if (!isVote(v) || v === prev) return;
+  if (live) {
+    const c = counts[current] = counts[current] || {};
+    c[v] = (Number(c[v]) || 0) + 1;
+    if (prev) c[prev] = Math.max((Number(c[prev]) || 0) - 1, 0);
+  }
+  myVotes[current] = v; saveVotes(); renderRate();
+  say(THANKS[Math.floor(Math.random() * THANKS.length)]);
+  fetch(API + "/api/rate", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ site: SITE, day: current, vote: v, prev }) }).catch(() => {});
+});
+
+/* doors */
+const amodal = $("amodal");
+const taps = {};
+let pending = 0;
+function openDoor(cell, n) {
+  opened.push(n); save();
+  cell.classList.add("open"); cell.classList.remove("today");
+  cell.querySelector(".door").classList.remove("locked");
+  const r = cell.getBoundingClientRect();
+  fg.burst(r.left + r.width / 2, r.top + r.height / 2);
+  setTimeout(() => show(n), 650);
+}
+grid.addEventListener("click", e => {
+  const cell = e.target.closest(".cell");
+  if (!cell) return;
+  const n = +cell.dataset.n;
+  if (opened.includes(n)) { show(n); return; }
+  if (!canOpen(n)) {
+    const now = Date.now(), t = taps[n] && now - taps[n].at < 4000 ? taps[n] : { count: 0 };
+    t.count += 1; t.at = now; taps[n] = t;
+    if (t.count >= 5) {
+      taps[n] = { count: 0 };
+      pending = n;
+      openModal(amodal, $("aok"));
+      return;
+    }
+    cell.classList.remove("shake"); void cell.offsetWidth; cell.classList.add("shake");
+    heckle(n);
+    return;
+  }
+  openDoor(cell, n);
+});
+$("aok").addEventListener("click", () => {
+  const n = pending; pending = 0;
+  closeModal(amodal);
+  const cell = grid.querySelector('.cell[data-n="' + n + '"]');
+  if (cell && !opened.includes(n)) openDoor(cell, n);
+});
+$("acancel").addEventListener("click", () => { pending = 0; closeModal(amodal); });
+amodal.addEventListener("click", e => { if (e.target === amodal) { pending = 0; closeModal(amodal); } });
+$("close").addEventListener("click", () => closeModal(modal));
+modal.addEventListener("click", e => { if (e.target === modal) closeModal(modal); });
+$("copy").addEventListener("click", () => {
+  const text = "Boob Advent, day " + current + ": " + FACTS[current - 1];
+  try {
+    navigator.clipboard.writeText(text).then(() => say("Copied. Share the knowledge."), () => say("Couldn't copy on this device."));
+  } catch (e) { say("Couldn't copy on this device."); }
+});
+
+/* send your own fact */
+const sform = $("sform"), smsg = $("smsg");
+$("openSubmit").addEventListener("click", () => { smsg.textContent = ""; openModal(smodal, $("sfact")); });
+$("scancel").addEventListener("click", () => closeModal(smodal));
+smodal.addEventListener("click", e => { if (e.target === smodal) closeModal(smodal); });
+sform.addEventListener("submit", e => {
+  e.preventDefault();
+  const fact = $("sfact").value.trim(), name = $("sname").value.trim();
+  const done = () => {
+    smsg.textContent = "Thanks! Your fact's in Santa's sack.";
+    say("Fact sent. Thank you!");
+    sform.reset();
+    setTimeout(() => closeModal(smodal), 1800);
+  };
+  if ($("sweb").value) { done(); return; }
+  if (fact.length < 3) { smsg.textContent = "That's a bit short. Tell us a little more."; say(smsg.textContent); return; }
+  const btn = $("ssend");
+  btn.disabled = true; btn.textContent = "Sending…"; smsg.textContent = "Sending…";
+  const ctl = typeof AbortController === "function" ? new AbortController() : null;
+  const timer = ctl ? setTimeout(() => ctl.abort(), 12000) : 0;
+  fetch(API + "/api/submit", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ site: SITE, text: fact, name }), signal: ctl ? ctl.signal : undefined })
+    .then(r => { if (!r.ok) throw new Error("status " + r.status); done(); })
+    .catch(err => {
+      smsg.textContent = "Couldn't send that just now (" + (err && err.name === "AbortError" ? "timed out" : (err && err.message) || "network error") + "). Please try again.";
+      say("Couldn't send your fact. Try again in a minute.");
+    })
+    .finally(() => { clearTimeout(timer); btn.disabled = false; btn.textContent = "Send fact"; });
+});
+
+document.addEventListener("keydown", e => {
+  if (e.key !== "Escape") return;
+  if (amodal.classList.contains("show")) { pending = 0; closeModal(amodal); }
+  else if (smodal.classList.contains("show")) closeModal(smodal);
+  else if (modal.classList.contains("show")) closeModal(modal);
+});
+window.addEventListener("hashchange", render);
+render();
+setInterval(() => { if (![modal, smodal, amodal].some(m => m.classList.contains("show"))) render(); }, 60000);
+
+/* falling snow: a fine layer behind the board, a big soft layer in front, plus door bursts */
+const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+function snow(c, o) {
+  const ctx = c.getContext("2d");
+  let W = 0, H = 0, flakes = [], bits = [];
+  const size = () => {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = c.clientWidth; H = c.clientHeight;
+    c.width = W * dpr; c.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const count = Math.round(Math.min(o.max, W * H / o.density));
+    flakes = Array.from({ length: count }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      r: o.r0 + Math.random() * o.r1, s: o.s0 + Math.random() * o.s1,
+      p: Math.random() * 6.28, a: o.a0 + Math.random() * .4
+    }));
+    if (still) draw();
+  };
+  const draw = () => {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = "#fff";
+    for (const f of flakes) {
+      ctx.globalAlpha = f.a;
+      ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, 6.283); ctx.fill();
+    }
+    for (const b of bits) {
+      ctx.globalAlpha = Math.max(b.life, 0);
+      ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, 6.283); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  };
+  const step = () => {
+    for (const f of flakes) {
+      f.p += .012; f.y += f.s * (f.r / 2.2) * o.fall; f.x += Math.sin(f.p) * o.sway;
+      if (f.y > H + 10) { f.y = -10; f.x = Math.random() * W; }
+      if (f.x > W + 10) f.x = -10; else if (f.x < -10) f.x = W + 10;
+    }
+    for (const b of bits) { b.x += b.vx; b.y += b.vy; b.vy += .14; b.vx *= .98; b.life -= .016; }
+    bits = bits.filter(b => b.life > 0);
+    draw();
+    requestAnimationFrame(step);
+  };
+  const ro = new ResizeObserver(size);
+  ro.observe(c);
+  size();
+  if (!still) requestAnimationFrame(step);
+  return {
+    burst(x, y) {
+      if (still) return;
+      for (let i = 0; i < 55; i++) {
+        const a = Math.random() * 6.283, sp = 2 + Math.random() * 5;
+        bits.push({ x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 2.5, r: 1.5 + Math.random() * 3.5, life: 1 });
+      }
+    }
+  };
+}
+snow($("snow"), { max: 240, density: 6500, r0: .8, r1: 3.2, s0: .4, s1: 1.2, a0: .45, fall: 1, sway: .5 });
+const fg = snow($("snowfg"), { max: 45, density: 30000, r0: 4, r1: 4.5, s0: .5, s1: .7, a0: .55, fall: .6, sway: 1.1 });
+}
+</script>
+</body>
+</html>

@@ -6,6 +6,7 @@
   - `docs/kpop/index.html`: KPop Demon Hunters Advent at `/kpop/`
   - `docs/bakeoff/index.html`: Bake Off Advent at `/bakeoff/`
   - `docs/pokemon/index.html`: Pokémon Advent at `/pokemon/`
+  - `docs/boobs/index.html`: Boob Advent at `/boobs/`
 - **Ratings and joke submissions** (`src/worker.js`) run on a **Cloudflare Worker** called `yourmum-advent`, using the `yourmum` D1 database. The page calls it in the background; visitors never leave the site.
 
 Pushing to `main` updates both.
@@ -34,9 +35,10 @@ SELECT * FROM submissions_sonic ORDER BY created DESC;  -- Sonic Advent
 SELECT * FROM submissions_kpop ORDER BY created DESC;   -- KPop Demon Hunters Advent
 SELECT * FROM submissions_bakeoff ORDER BY created DESC; -- Bake Off Advent
 SELECT * FROM submissions_pokemon ORDER BY created DESC; -- Pokémon Advent
+SELECT * FROM submissions_boobs ORDER BY created DESC;   -- Boob Advent
 ```
 
-Each calendar keeps its own votes and submissions (`ratings`, `ratings_sonic`, `ratings_kpop`, `ratings_bakeoff`, `ratings_pokemon`).
+Each calendar keeps its own votes and submissions (`ratings`, `ratings_sonic`, `ratings_kpop`, `ratings_bakeoff`, `ratings_pokemon`, `ratings_boobs`).
 
 ## Testing before December
 
