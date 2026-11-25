@@ -16,7 +16,7 @@ Pushing to `main` updates both.
 ## Cloudflare Worker
 
 - It builds from this repo with the deploy command `npx wrangler deploy`.
-- Its address is set in `docs/index.html` (`const API = ...`).
+- Its address is `https://yourmum-advent.iamthebest111.workers.dev`, set in `docs/index.html` (`const API = ...`).
 - The sites allowed to call it are listed in `ALLOWED_ORIGINS` at the top of `src/worker.js`.
 
 ## Reading submitted jokes
