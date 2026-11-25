@@ -1,30 +1,35 @@
-# Your Mum's Advent: deploying to Cloudflare Pages
+# Your Mum's Advent: deploying on Cloudflare
 
-The site is `index.html` plus three small API functions in `functions/api/`, backed by a free Cloudflare D1 database:
+This is a Cloudflare Worker with static assets:
 
-- `GET /api/ratings`: the vote counts for every day
-- `POST /api/rate`: records a vote (Groan, Heh or Howling)
-- `POST /api/submit`: saves a joke sent through the "Send us your joke" form
+- `public/index.html`: the calendar page
+- `src/worker.js`: serves the page and the small API (`/api/ratings`, `/api/rate`, `/api/submit`)
+- `wrangler.jsonc`: the Worker settings
 
-Because of the functions, deploy with Wrangler (Cloudflare's command-line tool) or from a GitHub repo, not by drag-and-drop.
+It deploys automatically from GitHub with the deploy command `npx wrangler deploy`.
 
-## Steps (Wrangler)
+## Ratings and joke submissions (D1 database)
 
-1. Install Node.js, then run `npx wrangler login`.
-2. Create the database: `npx wrangler d1 create yourmum-advent`. Note the `database_id` it prints.
-3. Create the tables: `npx wrangler d1 execute yourmum-advent --remote --file=schema.sql`
-4. Deploy from this folder: `npx wrangler pages deploy . --project-name=yourmum-advent`
-5. In the Cloudflare dashboard, open **Workers & Pages → yourmum-advent → Settings → Bindings**, add a **D1 database** binding named `DB` pointing at `yourmum-advent`, then deploy again (step 4).
-6. Under **Custom domains**, add `advent.woollgar.co.uk`. If woollgar.co.uk's DNS is on Cloudflare, the record is created for you. Otherwise, add a CNAME record named `advent` that points to `yourmum-advent.pages.dev`.
+The site works without the database: you just won't see rating counts, and the joke form says to try later. To switch them on:
+
+1. In the Cloudflare dashboard, go to **Storage & Databases → D1 → Create** and name the database `yourmum-advent`.
+2. Copy its **Database ID**.
+3. In `wrangler.jsonc`, add the `d1_databases` block that's shown in the comment there, with that ID, then push the change.
+
+The Worker creates its own tables the first time it's used, so you don't need to run any SQL.
 
 ## Reading submitted jokes
 
-Open **Storage & Databases → D1 → yourmum-advent → Console** and run:
+Go to **D1 → yourmum-advent → Console** and run:
 
 ```sql
 SELECT * FROM submissions ORDER BY created DESC;
 ```
 
+## Custom domain
+
+In the Worker's **Settings → Domains & Routes**, add the custom domain `advent.woollgar.co.uk`.
+
 ## Testing before December
 
-Add `#preview` to the address to unlock every door. Doors you open in preview mode aren't remembered, so your real calendar stays closed.
+Add `#preview` to the address to unlock every door. Doors you open in preview mode aren't remembered.
