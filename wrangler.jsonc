@@ -7,7 +7,12 @@
     "directory": "./public",
     "binding": "ASSETS",
     "run_worker_first": ["/api/*"]
-  }
-  // Once the D1 database exists, add:
-  // ,"d1_databases": [{ "binding": "DB", "database_name": "yourmum-advent", "database_id": "<id>" }]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "yourmum",
+      "database_id": "89ae1c07-c031-4156-9728-56a158e29d3c"
+    }
+  ]
 }
