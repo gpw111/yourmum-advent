@@ -179,6 +179,16 @@ footer span{display:inline-block;padding:6px 16px;border-radius:999px;background
     </div>
   </div>
 </div>
+<div class="modal" id="amodal" role="dialog" aria-modal="true" aria-labelledby="aTitle">
+  <div class="card">
+    <h2 id="aTitle">Hold your horses</h2>
+    <p>I acknowledge I want to open this door just like my mum's legs</p>
+    <div class="btns">
+      <button class="btn alt" id="acancel" type="button">Cancel</button>
+      <button class="btn" id="aok" type="button">I acknowledge</button>
+    </div>
+  </div>
+</div>
 <div class="modal" id="smodal" role="dialog" aria-modal="true" aria-labelledby="sTitle">
   <div class="card">
     <h2 id="sTitle">Got a better one?</h2>
@@ -441,23 +451,45 @@ $("rate").addEventListener("click", e => {
 });
 
 /* doors */
+const amodal = $("amodal");
+const taps = {};
+let pending = 0;
+function openDoor(cell, n) {
+  opened.push(n); save();
+  cell.classList.add("open"); cell.classList.remove("today");
+  cell.querySelector(".door").classList.remove("locked");
+  const r = cell.getBoundingClientRect();
+  fg.burst(r.left + r.width / 2, r.top + r.height / 2);
+  setTimeout(() => show(n), 650);
+}
 grid.addEventListener("click", e => {
   const cell = e.target.closest(".cell");
   if (!cell) return;
   const n = +cell.dataset.n;
+  if (opened.includes(n)) { show(n); return; }
   if (!canOpen(n)) {
+    const now = Date.now(), t = taps[n] && now - taps[n].at < 4000 ? taps[n] : { count: 0 };
+    t.count += 1; t.at = now; taps[n] = t;
+    if (t.count >= 5) {
+      taps[n] = { count: 0 };
+      pending = n;
+      openModal(amodal, $("aok"));
+      return;
+    }
     cell.classList.remove("shake"); void cell.offsetWidth; cell.classList.add("shake");
     heckle(n);
     return;
   }
-  if (!opened.includes(n)) {
-    opened.push(n); save();
-    cell.classList.add("open"); cell.classList.remove("today");
-    const r = cell.getBoundingClientRect();
-    fg.burst(r.left + r.width / 2, r.top + r.height / 2);
-    setTimeout(() => show(n), 650);
-  } else show(n);
+  openDoor(cell, n);
 });
+$("aok").addEventListener("click", () => {
+  const n = pending; pending = 0;
+  closeModal(amodal);
+  const cell = grid.querySelector('.cell[data-n="' + n + '"]');
+  if (cell && !opened.includes(n)) openDoor(cell, n);
+});
+$("acancel").addEventListener("click", () => { pending = 0; closeModal(amodal); });
+amodal.addEventListener("click", e => { if (e.target === amodal) { pending = 0; closeModal(amodal); } });
 $("close").addEventListener("click", () => closeModal(modal));
 modal.addEventListener("click", e => { if (e.target === modal) closeModal(modal); });
 $("copy").addEventListener("click", () => {
@@ -498,12 +530,13 @@ sform.addEventListener("submit", e => {
 
 document.addEventListener("keydown", e => {
   if (e.key !== "Escape") return;
-  if (smodal.classList.contains("show")) closeModal(smodal);
+  if (amodal.classList.contains("show")) { pending = 0; closeModal(amodal); }
+  else if (smodal.classList.contains("show")) closeModal(smodal);
   else if (modal.classList.contains("show")) closeModal(modal);
 });
 window.addEventListener("hashchange", render);
 render();
-setInterval(() => { if (!modal.classList.contains("show") && !smodal.classList.contains("show")) render(); }, 60000);
+setInterval(() => { if (![modal, smodal, amodal].some(m => m.classList.contains("show"))) render(); }, 60000);
 
 /* falling snow: a fine layer behind the board, a big soft layer in front, plus door bursts */
 const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
