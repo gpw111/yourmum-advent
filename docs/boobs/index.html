@@ -254,11 +254,11 @@ function today() {
 const canOpen = n => preview() || n <= today();
 
 const FACTS = [
-  "Booby birds got their name from the Spanish word bobo, meaning foolish or clownish, because they're clumsy on land.",
-  "Male blue-footed boobies show off their feet to impress a mate with a high-stepping strut. The bluer the feet, the more attractive the bird.",
-  "Mammals are named after boobs. Carl Linnaeus coined the word Mammalia in 1758, from the Latin mamma, meaning breast.",
-  "Linnaeus was firmly against wet-nursing, and one historian argues that's partly why he picked breasts, rather than hair or ears, to name the whole group.",
-  "The Milky Way is named after breast milk. In Greek myth it was milk spilled across the sky by the goddess Hera, and the word galaxy comes from gala, Greek for milk.",
+  "Each breast has 15 to 20 sections called lobes, arranged like the petals of a daisy.",
+  "There's no muscle inside breasts. They rest on top of the big chest muscle underneath.",
+  "Breast size and shape come mostly from the fat around the milk-making lobes.",
+  "The little bumps around the nipple are Montgomery glands, oil glands that keep the skin protected. They're named after the Irish doctor who described them in 1837.",
+  "Breasts change through the monthly cycle. Hormones make the ducts and milk glands swell, which is why many people's breasts feel fuller or tender before a period.",
   "The modern bra was improvised in 1913 by 19-year-old Mary Phelps Jacob, using two silk handkerchiefs and some pink ribbon.",
   "Jacob patented her “backless brassiere” on 3 November 1914, then sold the patent to the Warner Brothers Corset Company for $1,500.",
   "Vogue magazine first used the word brassiere in 1907. People started shortening it to “bra” in the 1930s.",
@@ -290,11 +290,11 @@ const bauble = (x, y, r, f) => '<rect x="' + (x - 4) + '" y="' + (y - r - 6) + '
 const ribbon = (x, y, s, f) => '<g transform="translate(' + x + ' ' + y + ') scale(' + s + ')"><path d="M20 4Q8 4 8 18Q8 30 20 44Q32 30 32 18Q32 4 20 4Z" fill="none" stroke="' + f + '" stroke-width="8"/><path d="M14 36L4 60M26 36L36 60" fill="none" stroke="' + f + '" stroke-width="8"/></g>';
 
 const ART = [
-  /* 1 booby bird */ bird(14, 10, 1.1) + t(78, 26, "bobo!", 11, R),
-  /* 2 bright blue feet */ bird(4, 14, .9) + '<path d="M64 70h14M62 80h18" fill="none" stroke="' + B + '" stroke-width="7"/>' + '<path d="M76 22c4-8 14-4 10 4l-10 10-10-10c-4-8 6-12 10-4z" fill="' + P + '"/>',
-  /* 3 Latin book */ '<path d="M10 24Q30 16 50 24V86Q30 78 10 86Z" fill="#fff"/><path d="M90 24Q70 16 50 24V86Q70 78 90 86Z" fill="#fff"/>' + t(30, 50, "MAMMA", 9, R) + t(70, 50, "1758", 11, K) + '<path d="M18 62h24M58 62h24M18 70h20M58 70h22" fill="none" stroke="#c9b2c2" stroke-width="2"/>',
-  /* 4 baby bottle crossed? no: quill and scroll */ '<path d="M18 20H72Q80 20 80 28V84H26Q18 84 18 76Z" fill="' + C + '"/><path d="M28 36h40M28 46h40M28 56h30M28 66h36" fill="none" stroke="#c9b2c2" stroke-width="2"/><path d="M86 8Q60 30 58 62L64 60Q70 34 90 12Z" fill="' + T + '"/>' + t(48, 94, "LINNAEUS", 9, R),
-  /* 5 milky galaxy */ '<circle cx="50" cy="50" r="40" fill="#2a1a4a"/><path d="M20 62Q40 30 80 38Q60 44 50 56Q40 66 20 62Z" fill="#fff" opacity=".85"/>' + loop(12, i => '<circle cx="' + [24, 70, 34, 78, 60, 30, 46, 66, 82, 18, 52, 40][i] + '" cy="' + [30, 22, 74, 60, 76, 44, 26, 64, 46, 54, 84, 40][i] + '" r="1.6" fill="' + Y + '" stroke="none"/>') + t(50, 97, "GALA = MILK", 8, R),
+  /* 1 daisy */ (() => { let p = ""; for (let k = 0; k < 16; k++) { const ang = k / 16 * 360; p += '<ellipse cx="50" cy="24" rx="7" ry="18" fill="#fff" transform="rotate(' + ang + ' 50 50)"/>'; } return p + '<circle cx="50" cy="50" r="12" fill="' + Y + '"/>'; })() + t(50, 98, "15-20 LOBES", 9, R),
+  /* 2 dumbbell, no */ '<rect x="20" y="44" width="60" height="10" fill="#9aa3ad"/><rect x="10" y="32" width="12" height="34" rx="3" fill="#4a4f57"/><rect x="78" y="32" width="12" height="34" rx="3" fill="#4a4f57"/><circle cx="50" cy="50" r="40" fill="none" stroke="' + R + '" stroke-width="6"/><path d="M22 22L78 78" fill="none" stroke="' + R + '" stroke-width="6"/>' + t(50, 98, "NO MUSCLE", 9, K),
+  /* 3 donut chart */ '<circle cx="50" cy="48" r="34" fill="' + Y + '"/><path d="M50 48L50 14A34 34 0 0 1 82 38Z" fill="' + P + '"/><circle cx="50" cy="48" r="16" fill="' + C + '"/>' + t(50, 52, "FAT", 10, K) + t(50, 96, "mostly", 10, R),
+  /* 4 magnifier and oil drop */ '<circle cx="42" cy="42" r="24" fill="#e9f6fb"/><circle cx="42" cy="42" r="24" fill="none" stroke-width="5"/><path d="M60 60L84 84" fill="none" stroke="' + K + '" stroke-width="8"/><path d="M42 28Q52 42 42 52Q32 42 42 28Z" fill="' + Y + '"/>' + t(70, 22, "1837", 11, R),
+  /* 5 cycle arrows */ '<circle cx="50" cy="50" r="30" fill="none" stroke="' + P + '" stroke-width="8" stroke-dasharray="40 8"/><path d="M76 30l6 12-13 1z" fill="' + P + '"/><circle cx="50" cy="50" r="12" fill="' + T + '"/>' + t(50, 96, "monthly", 10, R),
   /* 6 handkerchiefs and ribbon */ '<path d="M10 30L44 26L46 62L12 66Z" fill="#fff"/><path d="M56 26L90 30L88 66L54 62Z" fill="#fff"/><path d="M14 34L40 30M58 30L84 34" fill="none" stroke="#c9b2c2" stroke-width="2"/><path d="M44 44Q50 52 56 44" fill="none" stroke="' + P + '" stroke-width="4"/><path d="M50 48Q38 66 30 82M50 48Q62 66 70 82" fill="none" stroke="' + P + '" stroke-width="4"/>' + t(50, 96, "1913", 10, R),
   /* 7 patent certificate */ '<rect x="12" y="14" width="76" height="66" rx="4" fill="#fffdf2"/><rect x="18" y="20" width="64" height="54" rx="2" fill="none" stroke="' + Y + '" stroke-width="2"/>' + t(50, 36, "PATENT", 12, K) + t(50, 52, "3 NOV 1914", 9, R) + '<circle cx="70" cy="74" r="10" fill="' + R + '"/><path d="M64 82L60 94L66 90L70 96L72 84" fill="' + R + '"/>' + t(36, 66, "$1,500", 10, T),
   /* 8 magazine */ '<rect x="20" y="10" width="60" height="80" fill="' + C + '"/><rect x="20" y="10" width="60" height="18" fill="' + K + '"/>' + t(50, 23, "MAGAZINE", 9, C) + t(50, 54, "BRA?", 16, P) + t(50, 80, "1907", 11, R),
