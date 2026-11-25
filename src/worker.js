@@ -7,6 +7,7 @@
 
 const ALLOWED_ORIGINS = [
   "https://advent.woollgar.co.uk",
+  "http://advent.woollgar.co.uk", // until GitHub's HTTPS certificate is ready
   "https://gpw111.github.io"
 ];
 const VOTES = ["groan", "heh", "howl"];
