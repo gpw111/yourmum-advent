@@ -65,6 +65,7 @@ h1{font-family:"Mountains of Christmas",cursive;font-weight:700;font-size:clamp(
 .card h2{font-family:"Mountains of Christmas",cursive;font-size:clamp(32px,6vw,44px);line-height:1.05;margin:0 0 12px;color:var(--red)}
 .card p{font-size:clamp(19px,3.4vw,23px);line-height:1.4;font-weight:700;margin:0 0 24px;text-wrap:balance}
 .btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn:disabled{opacity:.6;cursor:wait}
 .btn{font:800 16px Nunito,sans-serif;min-height:44px;padding:10px 22px;border-radius:999px;border:0;cursor:pointer;background:var(--green);color:var(--cream)}
 .btn.alt{background:transparent;color:var(--green);box-shadow:inset 0 0 0 2px var(--green)}
 .btn:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
@@ -84,7 +85,7 @@ footer span{display:inline-block;padding:6px 16px;border-radius:999px;background
 .card textarea,.card input{display:block;width:100%;font:16px/1.4 Nunito,sans-serif;padding:10px 12px;border-radius:12px;border:2px solid #e2cfa6;background:#fff;color:#3b120d;margin:0 0 14px}
 .card textarea{min-height:110px;resize:vertical}.card input{min-height:44px}
 .card textarea:focus,.card input:focus{outline:3px solid var(--gold);outline-offset:1px}
-.card form .note{text-align:center;min-height:1.4em}
+.card form .note{text-align:center;min-height:1.4em;color:var(--red);font-size:16px}
 .hp{position:absolute!important;left:-9999px;width:1px;height:1px;opacity:0}
 .modal{overflow-y:auto;padding-top:48px}.modal.show{align-items:safe center}
 .link{all:unset;cursor:pointer;display:inline-block;margin-top:12px;padding:11px 20px;border-radius:999px;background:var(--red);color:var(--cream);font-weight:800;box-shadow:0 0 0 2px var(--gold),0 6px 16px rgba(0,0,0,.35)}
@@ -187,7 +188,7 @@ footer span{display:inline-block;padding:6px 16px;border-radius:999px;background
       <textarea id="sjoke" maxlength="280" placeholder="Your mum's so…"></textarea>
       <label class="lab" for="sname">Your name (optional)</label>
       <input id="sname" maxlength="40" autocomplete="nickname">
-      <input class="hp" id="sweb" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <input class="hp" id="sweb" name="leave_blank" tabindex="-1" autocomplete="off" aria-hidden="true">
       <p class="note" id="smsg" role="status"></p>
       <div class="btns">
         <button class="btn alt" id="scancel" type="button">Cancel</button>
@@ -474,14 +475,25 @@ smodal.addEventListener("click", e => { if (e.target === smodal) closeModal(smod
 sform.addEventListener("submit", e => {
   e.preventDefault();
   const joke = $("sjoke").value.trim(), name = $("sname").value.trim();
-  if ($("sweb").value) { smsg.textContent = "Cheers! Your joke's in Santa's sack."; sform.reset(); return; }
-  if (joke.length < 8) { smsg.textContent = "Bit short. Even your mum's jokes are longer than that."; return; }
+  const done = () => {
+    smsg.textContent = "Cheers! Your joke's in Santa's sack.";
+    say("Joke sent. Your mum would be proud.");
+    sform.reset();
+    setTimeout(() => closeModal(smodal), 1800);
+  };
+  if ($("sweb").value) { done(); return; }
+  if (joke.length < 8) { smsg.textContent = "Bit short. Even your mum's jokes are longer than that."; say(smsg.textContent); return; }
   const btn = $("ssend");
-  btn.disabled = true; smsg.textContent = "Sending…";
-  fetch(API + "/api/submit", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ joke, name }) })
-    .then(r => { if (!r.ok) throw 0; smsg.textContent = "Cheers! Your joke's in Santa's sack."; sform.reset(); })
-    .catch(() => { smsg.textContent = "Couldn't send that just now. Please try again later."; })
-    .finally(() => { btn.disabled = false; });
+  btn.disabled = true; btn.textContent = "Sending…"; smsg.textContent = "Sending…";
+  const ctl = typeof AbortController === "function" ? new AbortController() : null;
+  const timer = ctl ? setTimeout(() => ctl.abort(), 12000) : 0;
+  fetch(API + "/api/submit", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ joke, name }), signal: ctl ? ctl.signal : undefined })
+    .then(r => { if (!r.ok) throw new Error("status " + r.status); done(); })
+    .catch(err => {
+      smsg.textContent = "Couldn't send that just now (" + (err && err.name === "AbortError" ? "timed out" : (err && err.message) || "network error") + "). Please try again.";
+      say("Couldn't send your joke. Try again in a minute.");
+    })
+    .finally(() => { clearTimeout(timer); btn.disabled = false; btn.textContent = "Send joke"; });
 });
 
 document.addEventListener("keydown", e => {
