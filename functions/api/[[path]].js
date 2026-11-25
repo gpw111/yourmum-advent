@@ -1,4 +1,4 @@
-// Your Mum's Advent: serves the page from ./public and the small API under /api/.
+// Your Mum's Advent: Pages Function handling everything under /api/.
 // The D1 database (binding "DB") is optional: without it the page still works,
 // ratings show no counts and the joke form says to try later.
 
@@ -22,10 +22,9 @@ async function body(request) {
   try { return await request.json(); } catch { return null; }
 }
 
-export default {
-  async fetch(request, env) {
+export async function onRequest({ request, env }) {
+  {
     const url = new URL(request.url);
-    if (!url.pathname.startsWith("/api/")) return env.ASSETS.fetch(request);
     if (!env.DB) return json({ error: "Database not connected yet" }, 503);
     await init(env.DB);
 
@@ -59,4 +58,4 @@ export default {
 
     return json({ error: "Not found" }, 404);
   }
-};
+}
