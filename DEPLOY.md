@@ -1,22 +1,25 @@
-# Your Mum's Advent: deploying on Cloudflare
-
-This is a Cloudflare Worker with static assets:
+# Your Mum's Advent: deploying on Cloudflare Pages
 
 - `public/index.html`: the calendar page
-- `src/worker.js`: serves the page and the small API (`/api/ratings`, `/api/rate`, `/api/submit`)
-- `wrangler.jsonc`: the Worker settings
+- `functions/api/[[path]].js`: the small API (`/api/ratings`, `/api/rate`, `/api/submit`)
+- `wrangler.jsonc`: the project settings, including the `DB` binding to the `yourmum` D1 database
 
-It deploys automatically from GitHub with the deploy command `npx wrangler deploy`.
+The function creates its own database tables the first time it's used, so you don't need to run any SQL.
 
-## Ratings and joke submissions (D1 database)
+## Create the Pages project
 
-The site works without the database: you just won't see rating counts, and the joke form says to try later. To switch them on:
+1. Go to **Workers & Pages → Create**, choose the **Pages** tab, then **Import an existing Git repository**.
+2. Pick `gpw111/yourmum-advent`.
+3. Name the project `yourmum-advent`, set the framework preset to **None**, leave the build command blank and set the build output directory to `public`.
+4. Click **Save and Deploy**.
 
-1. In the Cloudflare dashboard, go to **Storage & Databases → D1 → Create** and name the database `yourmum`.
-2. Copy its **Database ID**.
-3. In `wrangler.jsonc`, add the `d1_databases` block that's shown in the comment there, with that ID, then push the change.
+## Custom domain (your DNS stays where it is)
 
-The Worker creates its own tables the first time it's used, so you don't need to run any SQL.
+1. In the Pages project, open **Custom domains → Set up a custom domain** and enter `advent.woollgar.co.uk`.
+2. At your DNS provider, add a CNAME record:
+   - Name: `advent`
+   - Target: `yourmum-advent.pages.dev`
+3. Back in Cloudflare, wait for the domain to show as **Active**. The HTTPS certificate is issued automatically.
 
 ## Reading submitted jokes
 
@@ -25,10 +28,6 @@ Go to **D1 → yourmum → Console** and run:
 ```sql
 SELECT * FROM submissions ORDER BY created DESC;
 ```
-
-## Custom domain
-
-In the Worker's **Settings → Domains & Routes**, add the custom domain `advent.woollgar.co.uk`.
 
 ## Testing before December
 
