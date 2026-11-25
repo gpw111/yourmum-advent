@@ -276,8 +276,8 @@ function today() {
 const canOpen = n => preview() || n <= today();
 
 const FACTS = [
-  "KPop Demon Hunters arrived on Netflix on 20 June 2025, made by Sony Pictures Animation.",
-  "Co-director Maggie Kang said it took almost exactly seven years to go from pitching the idea to its release.",
+  "Jake's favourite KPop Demon Hunters character is Rumi!",
+  "The film arrived on Netflix on 20 June 2025. Co-director Maggie Kang said it took almost exactly seven years to get from pitching the idea to release day.",
   "Kang has said the K-pop part was the last thing folded into the concept. The demon-hunting idea came first.",
   "The idea of fighting with song and dance comes from gut, traditional Korean shaman rituals that used music and dance to protect communities from evil spirits.",
   "The rival boy band's name comes from joseung saja, the grim reapers of Korean folklore.",
@@ -311,7 +311,7 @@ const spark = (x, y, s, f) => '<path d="M' + x + ' ' + (y - s) + 'Q' + x + ' ' +
 const mic = (x, y, f) => '<rect x="' + (x - 3) + '" y="' + (y + 12) + '" width="6" height="24" rx="2" fill="' + K + '"/><rect x="' + (x - 9) + '" y="' + (y - 6) + '" width="18" height="22" rx="9" fill="' + (f || "#c9ced6") + '"/><path d="M' + (x - 9) + ' ' + (y + 2) + 'h18M' + (x - 9) + ' ' + (y + 8) + 'h18" fill="none" stroke-width="1.2"/>';
 
 const ART = [
-  /* 1 */ cal("JUNE 2025", "20", "PREMIERE"),
+  /* 1 Jake's favourite */ '<path d="M50 88L16 54A19 19 0 0 1 50 26A19 19 0 0 1 84 54Z" fill="' + P + '"/>' + t(50, 56, "JAKE'S", 11, C) + t(50, 70, "FAVE", 11, C) + spark(84, 18, 9) + spark(16, 22, 6, T) + spark(86, 80, 6, V),
   /* 2 hourglass */ '<path d="M28 12H72M28 88H72" fill="none" stroke-width="5"/><path d="M32 14Q32 40 50 50Q32 60 32 86H68Q68 60 50 50Q68 40 68 14Z" fill="#e8f7ff"/><path d="M38 24Q50 40 62 24Z" fill="' + Y + '"/><path d="M36 84Q50 66 64 84Z" fill="' + Y + '"/>' + t(84, 54, "7", 18, P) + t(84, 66, "YRS", 8, P),
   /* 3 last piece */ '<path d="M16 30H40Q38 20 46 20Q54 20 52 30H76V54Q86 52 86 60Q86 68 76 66V86H16Z" fill="' + V + '"/>' + t(46, 64, "K-POP", 12, C) + spark(84, 20, 8),
   /* 4 drum */ '<path d="M18 34Q50 50 18 66" fill="' + P + '"/><path d="M82 34Q50 50 82 66" fill="' + T + '"/><ellipse cx="18" cy="50" rx="8" ry="16" fill="' + C + '"/><ellipse cx="82" cy="50" rx="8" ry="16" fill="' + C + '"/><path d="M18 34L82 66M18 66L82 34" fill="none" stroke="' + Y + '" stroke-width="2"/>' + spark(50, 18, 9) + spark(30, 86, 6, P) + spark(72, 86, 6, T),
