@@ -201,6 +201,8 @@ footer span{display:inline-block;padding:6px 16px;border-radius:999px;background
 <script>
 {
 const YEAR = 2026;
+/* Ratings and joke submissions are handled by the Cloudflare Worker */
+const API = "https://yourmum-advent.CHANGE-ME.workers.dev";
 const JOKES = [
   "Your mum's so ugly, when she was born the wise men brought gold, frankincense and a paper bag.",
   "Your mum's so stupid, she opened all 24 doors on the 1st and called it “working ahead.”",
@@ -412,7 +414,7 @@ function renderRate() {
     '<button type="button" data-v="' + k + '" aria-pressed="' + (myVotes[current] === k) + '">' + l +
     (live ? '<small>' + (Number(c[k]) || 0) + '</small>' : "") + '</button>').join("");
 }
-fetch("/api/ratings").then(r => r.ok ? r.json() : Promise.reject()).then(rows => {
+fetch(API + "/api/ratings").then(r => r.ok ? r.json() : Promise.reject()).then(rows => {
   if (!Array.isArray(rows)) return;
   for (const r of rows) {
     const d = Number(r.day), v = String(r.vote), n = Number(r.n);
@@ -434,7 +436,7 @@ $("rate").addEventListener("click", e => {
   }
   myVotes[current] = v; saveVotes(); renderRate();
   say(THANKS[Math.floor(Math.random() * THANKS.length)]);
-  fetch("/api/rate", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ day: current, vote: v, prev }) }).catch(() => {});
+  fetch(API + "/api/rate", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ day: current, vote: v, prev }) }).catch(() => {});
 });
 
 /* doors */
@@ -476,7 +478,7 @@ sform.addEventListener("submit", e => {
   if (joke.length < 8) { smsg.textContent = "Bit short. Even your mum's jokes are longer than that."; return; }
   const btn = $("ssend");
   btn.disabled = true; smsg.textContent = "Sending…";
-  fetch("/api/submit", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ joke, name }) })
+  fetch(API + "/api/submit", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ joke, name }) })
     .then(r => { if (!r.ok) throw 0; smsg.textContent = "Cheers! Your joke's in Santa's sack."; sform.reset(); })
     .catch(() => { smsg.textContent = "Couldn't send that just now. Please try again later."; })
     .finally(() => { btn.disabled = false; });
