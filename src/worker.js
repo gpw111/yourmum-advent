@@ -14,7 +14,8 @@ const ALLOWED_ORIGINS = [
 const SITES = {
   mum:   { ratings: "ratings",       submissions: "submissions",       votes: ["groan", "heh", "howl"] },
   sonic: { ratings: "ratings_sonic", submissions: "submissions_sonic", votes: ["knew", "noway", "blown"] },
-  kpop:  { ratings: "ratings_kpop",  submissions: "submissions_kpop",  votes: ["knew", "noway", "blown"] }
+  kpop:  { ratings: "ratings_kpop",  submissions: "submissions_kpop",  votes: ["knew", "noway", "blown"] },
+  bakeoff: { ratings: "ratings_bakeoff", submissions: "submissions_bakeoff", votes: ["knew", "noway", "blown"] }
 };
 const SCHEMA = Object.values(SITES).flatMap(t => [
   "CREATE TABLE IF NOT EXISTS " + t.ratings + " (day INTEGER NOT NULL, vote TEXT NOT NULL, n INTEGER NOT NULL DEFAULT 0, PRIMARY KEY (day, vote))",
