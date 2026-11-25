@@ -3,6 +3,7 @@
 - **The pages** (`docs/`) are on **GitHub Pages** at `advent.woollgar.co.uk`, set by `docs/CNAME`:
   - `docs/index.html`: Your Mum's Advent at `/`
   - `docs/sonic/index.html`: Sonic Advent at `/sonic/`
+  - `docs/kpop/index.html`: KPop Demon Hunters Advent at `/kpop/`
 - **Ratings and joke submissions** (`src/worker.js`) run on a **Cloudflare Worker** called `yourmum-advent`, using the `yourmum` D1 database. The page calls it in the background; visitors never leave the site.
 
 Pushing to `main` updates both.
@@ -28,9 +29,10 @@ Go to **Cloudflare → D1 → yourmum → Console** and run:
 ```sql
 SELECT * FROM submissions ORDER BY created DESC;        -- Your Mum's Advent
 SELECT * FROM submissions_sonic ORDER BY created DESC;  -- Sonic Advent
+SELECT * FROM submissions_kpop ORDER BY created DESC;   -- KPop Demon Hunters Advent
 ```
 
-Each calendar keeps its own votes and submissions (`ratings` / `ratings_sonic`).
+Each calendar keeps its own votes and submissions (`ratings`, `ratings_sonic`, `ratings_kpop`).
 
 ## Testing before December
 
