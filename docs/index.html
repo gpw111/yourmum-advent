@@ -482,7 +482,7 @@ sform.addEventListener("submit", e => {
     setTimeout(() => closeModal(smodal), 1800);
   };
   if ($("sweb").value) { done(); return; }
-  if (joke.length < 8) { smsg.textContent = "Bit short. Even your mum's jokes are longer than that."; say(smsg.textContent); return; }
+  if (joke.length < 3) { smsg.textContent = "Bit short. Even your mum's jokes are longer than that."; say(smsg.textContent); return; }
   const btn = $("ssend");
   btn.disabled = true; btn.textContent = "Sending…"; smsg.textContent = "Sending…";
   const ctl = typeof AbortController === "function" ? new AbortController() : null;

@@ -67,7 +67,7 @@ async function handle(request, env, url) {
     const b = await readBody(request);
     const joke = String((b && b.joke) || "").trim().slice(0, 280);
     const name = String((b && b.name) || "").trim().slice(0, 40);
-    if (joke.length < 8) return { status: 400, data: { error: "Too short" } };
+    if (joke.length < 3) return { status: 400, data: { error: "Too short" } };
     await env.DB.prepare("INSERT INTO submissions (joke, name, created) VALUES (?1, ?2, datetime('now'))").bind(joke, name).run();
     return { status: 200, data: { ok: true } };
   }
