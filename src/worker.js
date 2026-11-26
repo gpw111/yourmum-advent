@@ -17,7 +17,8 @@ const SITES = {
   kpop:  { ratings: "ratings_kpop",  submissions: "submissions_kpop",  votes: ["knew", "noway", "blown"] },
   bakeoff: { ratings: "ratings_bakeoff", submissions: "submissions_bakeoff", votes: ["knew", "noway", "blown"] },
   pokemon: { ratings: "ratings_pokemon", submissions: "submissions_pokemon", votes: ["knew", "noway", "blown"] },
-  boobs:   { ratings: "ratings_boobs",   submissions: "submissions_boobs",   votes: ["knew", "noway", "blown"] }
+  boobs:   { ratings: "ratings_boobs",   submissions: "submissions_boobs",   votes: ["knew", "noway", "blown"] },
+  cranes:  { ratings: "ratings_cranes",  submissions: "submissions_cranes",  votes: ["knew", "noway", "blown"] }
 };
 const SCHEMA = Object.values(SITES).flatMap(t => [
   "CREATE TABLE IF NOT EXISTS " + t.ratings + " (day INTEGER NOT NULL, vote TEXT NOT NULL, n INTEGER NOT NULL DEFAULT 0, PRIMARY KEY (day, vote))",
